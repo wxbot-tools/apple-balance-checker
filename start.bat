@@ -1,87 +1,87 @@
 @echo off
 chcp 65001 >nul
 echo ==========================================
-echo   Apple Balance Checker 启动脚本
+echo   Apple Balance Checker
 echo ==========================================
 echo.
 
-REM 检查Python是否安装
+REM Check Python installation
 python --version >nul 2>&1
 if errorlevel 1 (
-    echo [ERROR] 未检测到Python！
-    echo 请先安装Python 3.10.12
-    echo 下载地址: https://www.python.org/downloads/release/python-31012/
+    echo ERROR - Python not found!
+    echo Please install Python 3.10.12
+    echo Download: https://www.python.org/downloads/release/python-31012/
     echo.
     pause
     exit /b 1
 )
 
-REM 检查Python版本
-echo [Step 1/3] 检查Python版本...
+REM Check Python version
+echo Step 1/3 - Checking Python version...
 for /f "tokens=2" %%i in ('python --version 2^>^&1') do set PYTHON_VERSION=%%i
 set REQUIRED_VERSION=3.10.12
 
-echo 当前Python版本: %PYTHON_VERSION%
-echo 要求Python版本: %REQUIRED_VERSION%
+echo Current Python version: %PYTHON_VERSION%
+echo Required version: %REQUIRED_VERSION%
 
 if not "%PYTHON_VERSION%"=="%REQUIRED_VERSION%" (
     echo.
-    echo [ERROR] Python版本不匹配！
-    echo 本程序要求Python版本为 3.10.12
-    echo 当前版本为 %PYTHON_VERSION%
+    echo ERROR - Python version mismatch!
+    echo This program requires Python 3.10.12
+    echo Current version: %PYTHON_VERSION%
     echo.
-    echo 请安装正确的Python版本:
+    echo Please install the correct version:
     echo https://www.python.org/downloads/release/python-31012/
     echo.
     pause
     exit /b 1
 )
-echo ✓ Python版本检查通过
+echo OK - Python version check passed
 echo.
 
-REM 检查Chrome是否安装
-echo [Step 2/3] 检查Chrome浏览器...
+REM Check Chrome browser
+echo Step 2/3 - Checking Chrome browser...
 set CHROME_INSTALLED=0
 
-REM 检查常见的Chrome安装路径
+REM Check common Chrome installation paths
 if exist "%ProgramFiles%\Google\Chrome\Application\chrome.exe" set CHROME_INSTALLED=1
 if exist "%ProgramFiles(x86)%\Google\Chrome\Application\chrome.exe" set CHROME_INSTALLED=1
 if exist "%LocalAppData%\Google\Chrome\Application\chrome.exe" set CHROME_INSTALLED=1
 
 if %CHROME_INSTALLED%==1 (
-    echo ✓ 检测到Chrome浏览器
+    echo OK - Chrome browser detected
 ) else (
-    echo [WARNING] 未检测到Chrome浏览器！
+    echo WARNING - Chrome browser not detected!
     echo.
     
-    REM 检查是否存在ChromeSetup.exe
+    REM Check for ChromeSetup.exe
     if exist "ChromeSetup.exe" (
-        echo 发现ChromeSetup.exe，正在安装Chrome...
-        echo 请按照安装向导完成Chrome浏览器的安装
+        echo Found ChromeSetup.exe, installing Chrome...
+        echo Please follow the installation wizard
         echo.
         start /wait ChromeSetup.exe
         
-        REM 安装后再次检查
+        REM Check again after installation
         if exist "%ProgramFiles%\Google\Chrome\Application\chrome.exe" set CHROME_INSTALLED=1
         if exist "%ProgramFiles(x86)%\Google\Chrome\Application\chrome.exe" set CHROME_INSTALLED=1
         if exist "%LocalAppData%\Google\Chrome\Application\chrome.exe" set CHROME_INSTALLED=1
         
         if %CHROME_INSTALLED%==1 (
-            echo ✓ Chrome安装成功
+            echo OK - Chrome installation successful
         ) else (
-            echo [ERROR] Chrome安装失败或未完成
-            echo 请手动安装Chrome浏览器后重试
-            echo 下载地址: https://www.google.com/chrome/
+            echo ERROR - Chrome installation failed
+            echo Please install Chrome manually
+            echo Download: https://www.google.com/chrome/
             echo.
             pause
             exit /b 1
         )
     ) else (
-        echo [ERROR] 未找到ChromeSetup.exe安装文件
+        echo ERROR - ChromeSetup.exe not found
         echo.
-        echo 请执行以下操作之一：
-        echo 1. 将ChromeSetup.exe放在当前目录下，然后重新运行此脚本
-        echo 2. 手动安装Chrome浏览器: https://www.google.com/chrome/
+        echo Please do one of the following:
+        echo 1. Put ChromeSetup.exe in the current directory
+        echo 2. Install Chrome manually: https://www.google.com/chrome/
         echo.
         pause
         exit /b 1
@@ -89,26 +89,26 @@ if %CHROME_INSTALLED%==1 (
 )
 echo.
 
-REM 检查依赖
-echo [Step 3/3] 检查Python依赖...
+REM Check dependencies
+echo Step 3/3 - Checking Python dependencies...
 pip show tornado >nul 2>&1
 if errorlevel 1 (
-    echo 正在安装依赖包...
+    echo Installing Python packages...
     pip install -r requirements.txt
-    echo ✓ 依赖安装完成
+    echo OK - Dependencies installed
 ) else (
-    echo ✓ 依赖包已安装
+    echo OK - Dependencies already installed
 )
 echo.
 
-REM 启动应用
+REM Start application
 echo ==========================================
-echo   启动 Web 服务器...
+echo   Starting Web Server...
 echo ==========================================
 echo.
-echo 服务器启动后会自动打开浏览器
-echo 默认地址: http://localhost:8080/view/index.html
-echo 按 Ctrl+C 可停止服务器
+echo Server will auto-open in browser
+echo Default URL: http://localhost:8080/view/index.html
+echo Press Ctrl+C to stop the server
 echo.
 echo ==========================================
 echo.
@@ -116,6 +116,5 @@ echo.
 python web_app.py
 
 echo.
-echo 服务器已停止
+echo Server stopped
 pause
-
