@@ -124,7 +124,7 @@ start.bat
 
 服务器启动后，浏览器会自动打开管理页面：
 ```
-http://localhost:8080/view/index.html
+http://localhost/view/index
 ```
 
 如未自动打开，请手动访问上述地址。
@@ -289,8 +289,8 @@ playwright install chromium
 **问题**：启动时提示端口已被使用
 
 **解决方法**：
-- 修改 `config.py` 中的 `port` 值（默认8080）
-- 或者关闭占用8080端口的其他程序
+- 修改 `config.py` 中的 `port` 值（默认80）
+- 或者关闭占用80端口的其他程序
 
 ### 5. 代理检测失败
 
@@ -310,7 +310,7 @@ playwright install chromium
 **解决方法**：
 - 确认服务已成功启动（查看命令行窗口输出）
 - 检查Windows防火墙设置，允许Python通过防火墙
-- 尝试使用 `http://127.0.0.1:8080/view/index.html`
+- 尝试使用 `http://127.0.0.1/view/index`
 - 检查是否有杀毒软件拦截
 
 ### 7. 依赖安装失败
@@ -370,7 +370,7 @@ pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
 - `POST /balance/check` - 执行余额检查
 
 #### 视图
-- `GET /view/index.html` - 访问主页面
+- `GET /view/index` - 访问主页面
 
 ### 本地开发
 
