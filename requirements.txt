@@ -1,7 +1,19 @@
-tornado
-loguru
-playwright
-bidict
-aiofiles
-httpx
-httpx[http2]
+# Python 版本要求: 3.10.12
+# python_requires = "==3.10.12"
+
+# Web框架
+tornado>=6.0.0,<7.0.0
+
+# 日志
+loguru>=0.6.0
+
+# 浏览器自动化
+playwright>=1.30.0
+
+# 工具库
+bidict>=0.22.0
+aiofiles>=23.0.0
+
+# HTTP客户端
+httpx>=0.23.0
+httpx[http2]>=0.23.0
