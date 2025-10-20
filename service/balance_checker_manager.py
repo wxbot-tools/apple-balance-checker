@@ -126,7 +126,7 @@ class Manager:
         managers = list(self.account_managers.values())
         status = {}
         for manager in managers:
-            status[manager._account] = {
+            status[manager._account.apple_id] = {
                 'country': manager.country,
                 'available': manager.available
             }
