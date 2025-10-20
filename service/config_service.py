@@ -29,7 +29,7 @@ async def get_proxy(country: str) -> dict:
         if provider == '922proxy':
             return {
                 'server': server,
-                'username': f'{username}-{country.upper()}-sessid-{str(random.randint(10000, 1000000))}-sessTime-5',
+                'username': f'{username}-region-{country.upper()}-sessid-{str(random.randint(10000, 1000000))}-sessTime-5',
                 'password': password,
             }
         else:
@@ -44,7 +44,7 @@ async def check_proxy(data):
     if provider == '922proxy':
         if not username or not password:
             raise ValueError('用户名和密码为必填项')
-        proxy = f'http://{username}-US-sessid-{str(random.randint(10000, 1000000))}-sessTime-5:G6xwpnyc@{server}'
+        proxy = f'http://{username}-region-US-sessid-{str(random.randint(10000, 1000000))}-sessTime-5:G6xwpnyc@{server}'
     else:
         raise ValueError('不支持的代理服务商')
 
