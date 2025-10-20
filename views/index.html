@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple Balance Checker</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .module-card {
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .module-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 0.25rem 0.25rem 0 0;
+        }
+        .status-badge {
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+        .btn-action {
+            margin-right: 5px;
+        }
+        .proxy-info {
+            background-color: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <h1 class="text-center mb-4">
+            <i class="fas fa-apple-alt"></i> Apple Balance Checker
+        </h1>
+
+        <!-- 代理模块 -->
+        <div class="card module-card">
+            <div class="module-header">
+                <h3><i class="fas fa-network-wired"></i> 代理配置</h3>
+            </div>
+            <div class="card-body">
+                <!-- 设置代理 -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>设置代理</h5>
+                        <form id="proxyForm">
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label for="proxyProvider">代理服务商 <span class="text-danger">*</span></label>
+                                    <select class="form-control" id="proxyProvider" required>
+                                        <option value="">请选择服务商</option>
+                                        <option value="922proxy" selected>922Proxy</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="proxyServer">服务器 <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="proxyServer" placeholder="例: 127.0.0.1:7890" required>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="proxyUsername">用户名</label>
+                                    <input type="text" class="form-control" id="proxyUsername" placeholder="可选">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="proxyPassword">密码</label>
+                                    <input type="password" class="form-control" id="proxyPassword" placeholder="可选">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-action">
+                                <i class="fas fa-save"></i> 保存
+                            </button>
+                            <button type="button" class="btn btn-info btn-action" id="btnViewProxy">
+                                <i class="fas fa-eye"></i> 查看当前配置
+                            </button>
+                            <button type="button" class="btn btn-success btn-action" id="btnCheckProxy">
+                                <i class="fas fa-check-circle"></i> 检测代理
+                            </button>
+                        </form>
+
+                        <!-- 当前代理信息显示 -->
+                        <div id="proxyInfo" class="proxy-info" style="display: none;">
+                            <h6><strong>当前代理配置:</strong></h6>
+                            <div id="proxyDetails"></div>
+                        </div>
+
+                        <!-- 检测结果 -->
+                        <div id="proxyCheckResult" style="margin-top: 15px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Balance Checker Account 模块 -->
+        <div class="card module-card">
+            <div class="module-header">
+                <h3><i class="fas fa-credit-card"></i> Balance Checker 账户管理</h3>
+            </div>
+            <div class="card-body">
+                <!-- 新增账户 -->
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <h5>新增账户</h5>
+                        <form id="accountForm">
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label for="appleId">Apple ID <span class="text-danger">*</span></label>
+                                    <input type="email" class="form-control" id="appleId" placeholder="apple@example.com" required>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="accountPassword">密码 <span class="text-danger">*</span></label>
+                                    <input type="password" class="form-control" id="accountPassword" required>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="countryCode">国家/地区 <span class="text-danger">*</span></label>
+                                    <select class="form-control" id="countryCode" required>
+                                        <option value="">请选择国家/地区</option>
+                                        <option value="us">美国</option>
+                                        <option value="de">德国</option>
+                                        <option value="gb">英国</option>
+                                        <option value="ca">加拿大</option>
+                                        <option value="au">澳大利亚</option>
+                                        <option value="hk">香港</option>
+                                        <option value="tw">台湾</option>
+                                        <option value="jp">日本</option>
+                                        <option value="kr">韩国</option>
+                                        <option value="sg">新加坡</option>
+                                        <option value="nz">新西兰</option>
+                                        <option value="fr">法国</option>
+                                        <option value="it">意大利</option>
+                                        <option value="es">西班牙</option>
+                                        <option value="nl">荷兰</option>
+                                        <option value="be">比利时</option>
+                                        <option value="ch">瑞士</option>
+                                        <option value="at">奥地利</option>
+                                        <option value="se">瑞典</option>
+                                        <option value="no">挪威</option>
+                                        <option value="dk">丹麦</option>
+                                        <option value="ie">爱尔兰</option>
+                                        <option value="pl">波兰</option>
+                                        <option value="cz">捷克</option>
+                                        <option value="hu">匈牙利</option>
+                                        <option value="ro">罗马尼亚</option>
+                                        <option value="bg">保加利亚</option>
+                                        <option value="gr">希腊</option>
+                                        <option value="pt">葡萄牙</option>
+                                        <option value="sk">斯洛伐克</option>
+                                        <option value="si">斯洛文尼亚</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="checkPin">测活代码 <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="checkPin" placeholder="X开头的礼品卡代码" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> 添加账户
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <hr>
+
+                <!-- 账户列表和状态 -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>账户列表与状态
+                            <!-- <button class="btn btn-sm btn-secondary" id="btnRefreshAccounts">
+                                <i class="fas fa-sync-alt"></i> 刷新
+                            </button> -->
+                            <small class="text-muted ml-2">
+                                <i class="fas fa-info-circle"></i> 状态每10秒自动刷新
+                            </small>
+                        </h5>
+                        <div id="accountsList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast 通知 -->
+    <div class="toast" id="toast" style="position: fixed; top: 20px; right: 20px; min-width: 250px; z-index: 9999;" data-delay="3000">
+        <div class="toast-header">
+            <strong class="mr-auto" id="toastTitle">通知</strong>
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
+        </div>
+        <div class="toast-body" id="toastBody"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 国家代码映射
+        const countryMap = {
+            'us': '美国',
+            'de': '德国',
+            'gb': '英国',
+            'ca': '加拿大',
+            'au': '澳大利亚',
+            'hk': '香港',
+            'tw': '台湾',
+            'jp': '日本',
+            'kr': '韩国',
+            'sg': '新加坡',
+            'nz': '新西兰',
+            'fr': '法国',
+            'it': '意大利',
+            'es': '西班牙',
+            'nl': '荷兰',
+            'be': '比利时',
+            'ch': '瑞士',
+            'at': '奥地利',
+            'se': '瑞典',
+            'no': '挪威',
+            'dk': '丹麦',
+            'ie': '爱尔兰',
+            'pl': '波兰',
+            'cz': '捷克',
+            'hu': '匈牙利',
+            'ro': '罗马尼亚',
+            'bg': '保加利亚',
+            'gr': '希腊',
+            'pt': '葡萄牙',
+            'sk': '斯洛伐克',
+            'si': '斯洛文尼亚'
+        };
+        
+        // 显示通知
+        function showToast(title, message, type = 'info') {
+            const toast = $('#toast');
+            const toastHeader = toast.find('.toast-header');
+            
+            toastHeader.removeClass('bg-success bg-danger bg-warning bg-info text-white');
+            if (type === 'success') {
+                toastHeader.addClass('bg-success text-white');
+            } else if (type === 'error') {
+                toastHeader.addClass('bg-danger text-white');
+            } else if (type === 'warning') {
+                toastHeader.addClass('bg-warning');
+            } else {
+                toastHeader.addClass('bg-info text-white');
+            }
+            
+            $('#toastTitle').text(title);
+            $('#toastBody').text(message);
+            toast.toast('show');
+        }
+
+        // API 调用封装
+        async function apiCall(url, method = 'GET', data = null) {
+            try {
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+                
+                if (data) {
+                    options.body = JSON.stringify(data);
+                }
+                
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return await response.json();
+            } catch (error) {
+                console.error('API调用失败:', error);
+                throw error;
+            }
+        }
+
+        // ========== 代理模块 ==========
+        
+        // 保存代理配置
+        $('#proxyForm').on('submit', async function(e) {
+            e.preventDefault();
+            
+            const proxyData = {
+                provider: $('#proxyProvider').val().trim(),
+                server: $('#proxyServer').val().trim(),
+                username: $('#proxyUsername').val().trim() || null,
+                password: $('#proxyPassword').val().trim() || null
+            };
+            
+            if (!proxyData.provider) {
+                showToast('错误', '请选择代理服务商', 'error');
+                return;
+            }
+            
+            if (!proxyData.server) {
+                showToast('错误', '服务器地址为必填项', 'error');
+                return;
+            }
+            
+            try {
+                await apiCall('/config/proxy', 'POST', proxyData);
+                showToast('成功', '代理配置已保存', 'success');
+            } catch (error) {
+                showToast('错误', '保存代理配置失败: ' + error.message, 'error');
+            }
+        });
+        
+        // 查看代理配置
+        $('#btnViewProxy').on('click', async function() {
+            try {
+                const proxy = await apiCall('/config/proxy', 'GET');
+                
+                if (proxy && proxy.server) {
+                    let html = `
+                        <p><strong>代理服务商:</strong> ${proxy.provider || '未设置'}</p>
+                        <p><strong>服务器:</strong> ${proxy.server || '未设置'}</p>
+                        <p><strong>用户名:</strong> ${proxy.username || '未设置'}</p>
+                        <p><strong>密码:</strong> ${proxy.password ? '********' : '未设置'}</p>
+                    `;
+                    $('#proxyDetails').html(html);
+                    $('#proxyInfo').slideDown();
+                    
+                    // 填充表单
+                    $('#proxyProvider').val(proxy.provider || '922proxy');
+                    $('#proxyServer').val(proxy.server || '');
+                    $('#proxyUsername').val(proxy.username || '');
+                    $('#proxyPassword').val(proxy.password || '');
+                } else {
+                    $('#proxyDetails').html('<p class="text-muted">暂无代理配置</p>');
+                    $('#proxyInfo').slideDown();
+                }
+            } catch (error) {
+                showToast('错误', '获取代理配置失败: ' + error.message, 'error');
+            }
+        });
+        
+        // 检测代理
+        $('#btnCheckProxy').on('click', async function() {
+            const proxyData = {
+                provider: $('#proxyProvider').val().trim(),
+                server: $('#proxyServer').val().trim(),
+                username: $('#proxyUsername').val().trim() || null,
+                password: $('#proxyPassword').val().trim() || null
+            };
+            
+            if (!proxyData.provider) {
+                showToast('错误', '请先选择代理服务商', 'error');
+                return;
+            }
+            
+            if (!proxyData.server) {
+                showToast('错误', '请先输入服务器地址', 'error');
+                return;
+            }
+            
+            const btn = $(this);
+            btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> 检测中...');
+            
+            try {
+                const result = await apiCall('/config/check_proxy', 'POST', proxyData);
+                
+                let resultClass = 'alert-success';
+                let resultIcon = 'check-circle';
+                let resultMessage = '代理可用';
+                if (result?.error) {
+                    resultClass = 'alert-danger';
+                    resultIcon = 'times-circle';
+                    resultMessage = `代理检测失败: ${result.message}`;
+                } else {
+                    resultMessage = `代理检测成功: ${JSON.stringify(result)}`;
+                }
+                
+                $('#proxyCheckResult').html(`
+                    <div class="alert ${resultClass} alert-dismissible fade show" role="alert">
+                        <i class="fas fa-${resultIcon}"></i> ${resultMessage}
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    </div>
+                `);
+                
+                // showToast('检测完成', resultMessage, result.status === 'success' ? 'success' : 'error');
+            } catch (error) {
+                $('#proxyCheckResult').html(`
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-times-circle"></i> 代理检测失败: ${error.message}
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    </div>
+                `);
+                // showToast('错误', '代理检测失败: ' + error.message, 'error');
+            } finally {
+                btn.prop('disabled', false).html('<i class="fas fa-check-circle"></i> 检测代理');
+            }
+        });
+
+        // ========== Balance Checker Account 模块 ==========
+        
+        // 添加账户
+        $('#accountForm').on('submit', async function(e) {
+            e.preventDefault();
+            
+            const accountData = {
+                apple_id: $('#appleId').val().trim(),
+                password: $('#accountPassword').val().trim(),
+                country: $('#countryCode').val().trim(),
+                check_pin: $('#checkPin').val().trim()
+            };
+            
+            try {
+                await apiCall('/config/balance_check_account', 'POST', accountData);
+                showToast('成功', '账户已添加', 'success');
+                
+                // 清空表单
+                $('#accountForm')[0].reset();
+                
+                // 刷新列表
+                loadAccounts();
+            } catch (error) {
+                showToast('错误', '添加账户失败: ' + error.message, 'error');
+            }
+        });
+        
+        // 加载账户列表
+        async function loadAccounts() {
+            try {
+                // 同时获取账户列表和状态信息
+                const [accounts, statusData] = await Promise.all([
+                    apiCall('/config/balance_check_account', 'GET'),
+                    apiCall('/balance/checker_status', 'GET').catch(() => ({}))
+                ]);
+                
+                if (!accounts || accounts.length === 0) {
+                    $('#accountsList').html('<p class="text-muted">暂无账户</p>');
+                    return;
+                }
+                
+                let html = '<div class="table-responsive"><table class="table table-striped table-hover">';
+                html += '<thead class="thead-dark"><tr>';
+                html += '<th>Apple ID</th>';
+                html += '<th>国家/地区</th>';
+                html += '<th>测活代码</th>';
+                html += '<th>状态</th>';
+                html += '<th>操作</th>';
+                html += '</tr></thead><tbody>';
+                
+                accounts.forEach(account => {
+                    const countryCode = account.country ? account.country.toLowerCase() : '';
+                    const countryName = countryMap[countryCode] || account.country || '';
+                    const displayCountry = countryName ? `${countryName} (${countryCode.toUpperCase()})` : '';
+                    
+                    // 获取该账户的状态
+                    const accountStatus = statusData[account.apple_id] || {};
+                    let statusBadge = 'secondary';
+                    let statusText = '不可用';
+                    let statusIcon = 'circle';
+                    
+                    if (!accountStatus.available) {
+                        statusBadge = 'warning';
+                        statusText = '不可用';
+                        statusIcon = 'circle';
+                    } else {
+                        statusBadge = 'success';
+                        statusText = '成功';
+                        statusIcon = 'check-circle';
+                    }
+                    
+                    html += '<tr>';
+                    html += `<td>${account.apple_id || ''}</td>`;
+                    html += `<td><span class="badge badge-info">${displayCountry}</span></td>`;
+                    html += `<td>${account.check_pin || '<span class="text-muted">未设置</span>'}</td>`;
+                    html += `<td>
+                        <span class="badge badge-${statusBadge}">
+                            <i class="fas fa-${statusIcon}"></i> ${statusText}
+                        </span>
+                        ${accountStatus.message ? `<br><small class="text-muted">${accountStatus.message}</small>` : ''}
+                    </td>`;
+                    html += `<td>
+                        <button class="btn btn-sm btn-danger btn-delete-account" data-apple-id="${account.apple_id}">
+                            <i class="fas fa-trash"></i> 删除
+                        </button>
+                    </td>`;
+                    html += '</tr>';
+                });
+                
+                html += '</tbody></table></div>';
+                $('#accountsList').html(html);
+                
+                // 绑定删除按钮事件
+                $('.btn-delete-account').on('click', function() {
+                    const appleId = $(this).data('apple-id');
+                    deleteAccount(appleId);
+                });
+                
+            } catch (error) {
+                $('#accountsList').html(`<p class="text-danger">加载失败: ${error.message}</p>`);
+            }
+        }
+        
+        // 删除账户
+        async function deleteAccount(appleId) {
+            if (!confirm(`确定要删除账户 ${appleId} 吗？`)) {
+                return;
+            }
+            
+            try {
+                await apiCall(`/config/balance_check_account?apple_id=${encodeURIComponent(appleId)}`, 'DELETE');
+                showToast('成功', '账户已删除', 'success');
+                loadAccounts();
+            } catch (error) {
+                showToast('错误', '删除账户失败: ' + error.message, 'error');
+            }
+        }
+        
+        // 刷新按钮
+        $('#btnRefreshAccounts').on('click', function() {
+            loadAccounts();
+            showToast('信息', '正在刷新账户列表和状态...', 'info');
+        });
+        
+        // 页面加载时初始化
+        $(document).ready(function() {
+            loadAccounts();
+            
+            // 自动刷新账户列表和状态（每10秒）
+            setInterval(loadAccounts, 10000);
+        });
+    </script>
+</body>
+</html>
+

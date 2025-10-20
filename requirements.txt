@@ -1,0 +1,7 @@
+tornado
+loguru
+playwright
+bidict
+aiofiles
+httpx
+httpx[http2]
