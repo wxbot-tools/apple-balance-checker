@@ -107,7 +107,7 @@ echo   Starting Web Server...
 echo ==========================================
 echo.
 echo Server will auto-open in browser
-echo Default URL: http://localhost:8080/view/index.html
+echo Default URL: http://localhost/view/index.html
 echo Press Ctrl+C to stop the server
 echo.
 echo ==========================================
