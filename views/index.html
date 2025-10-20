@@ -303,11 +303,49 @@
                 return;
             }
             
+            const submitBtn = $(this).find('button[type="submit"]');
+            const originalBtnHtml = submitBtn.html();
+            submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> 检测中...');
+            
             try {
+                // 先检测代理
+                showToast('检测中', '正在检测代理配置...', 'info');
+                const checkResult = await apiCall('/config/check_proxy', 'POST', proxyData);
+                
+                // 检查检测结果
+                if (checkResult?.error) {
+                    showToast('检测失败', `代理检测失败: ${checkResult.message || '无法连接'}，配置未保存`, 'error');
+                    $('#proxyCheckResult').html(`
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-times-circle"></i> 代理检测失败: ${checkResult.message || '无法连接'}
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        </div>
+                    `);
+                    return;
+                }
+                
+                // 检测通过，保存配置
+                submitBtn.html('<i class="fas fa-spinner fa-spin"></i> 保存中...');
                 await apiCall('/config/proxy', 'POST', proxyData);
-                showToast('成功', '代理配置已保存', 'success');
+                
+                showToast('成功', '代理检测通过，配置已保存', 'success');
+                $('#proxyCheckResult').html(`
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle"></i> 代理检测成功: ${JSON.stringify(checkResult)}
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    </div>
+                `);
+                
             } catch (error) {
-                showToast('错误', '保存代理配置失败: ' + error.message, 'error');
+                showToast('错误', `操作失败: ${error.message}，配置未保存`, 'error');
+                $('#proxyCheckResult').html(`
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-times-circle"></i> 代理检测失败: ${error.message}
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    </div>
+                `);
+            } finally {
+                submitBtn.prop('disabled', false).html(originalBtnHtml);
             }
         });
         

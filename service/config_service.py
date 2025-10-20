@@ -19,9 +19,11 @@ async def get_balance_checker_accounts(raw=True):
         ]
 
 
-async def get_proxy(country: str) -> dict:
+async def get_proxy(country: str, raw=False) -> dict:
     async with aiofiles.open(config.proxy_config_file, "r", encoding='utf-8') as f:
         data = json.loads(await f.read())
+        if raw:
+            return data
         server = data.get('server')
         username = data.get('username')
         password = data.get('password')

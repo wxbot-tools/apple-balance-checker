@@ -11,7 +11,7 @@ class ConfigHandler(BaseHandler):
             await config_service.set_proxy(json.loads(self.request.body))
             return self.write({})
         elif self.request.method.lower() == 'get':
-            return self.write(await config_service.get_proxy())
+            return self.write(await config_service.get_proxy(None, True))
     
     async def check_proxy(self):
         if self.request.method.lower() == 'post':
